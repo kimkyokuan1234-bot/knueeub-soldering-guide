@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>납땜 가이드 · 유비 하드웨어 교육</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gothic+A1:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F1EBDA;
+    --paper-2:#E7DFC9;
+    --ink:#29251F;
+    --ink-2:#5A5346;
+    --ochre:#BE8A22;
+    --ochre-soft:#E9D39B;
+    --teal:#2C6E66;
+    --rust:#A6432A;
+    --rule:#CDC3A8;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Gothic A1",system-ui,sans-serif;
+    font-size:17px;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+    word-break:keep-all;
+  }
+  .wrap{
+    max-width:780px;
+    margin:0 auto;
+    padding:0 22px 100px;
+  }
+
+  /* ---------- 마스트헤드 ---------- */
+  .mast{
+    padding:56px 0 30px;
+    border-bottom:3px solid var(--ink);
+    position:relative;
+  }
+  .mast::after{
+    content:"";
+    display:block;
+    height:3px;
+    background:var(--ink);
+    margin-top:5px;
+  }
+  .club-tag{
+    font-size:.78rem;
+    font-weight:700;
+    letter-spacing:.28em;
+    color:var(--teal);
+    text-transform:uppercase;
+    margin:0 0 14px;
+  }
+  .mast h1{
+    font-family:"Black Han Sans",sans-serif;
+    font-weight:400;
+    font-size:clamp(2.7rem,10vw,4.4rem);
+    line-height:.98;
+    letter-spacing:-.01em;
+    margin:0;
+    color:var(--ink);
+  }
+  .mast h1 em{
+    font-style:normal;
+    color:var(--ochre);
+  }
+  .mast .lede{
+    margin:16px 0 0;
+    max-width:46ch;
+    color:var(--ink-2);
+    font-weight:500;
+  }
+
+  /* ---------- 편집 안내(삭제 가능) ---------- */
+  .editor-note{
+    margin:28px 0 0;
+    padding:18px 20px;
+    border:2px dashed var(--rule);
+    background:transparent;
+    font-size:.9rem;
+    color:var(--ink-2);
+    line-height:1.7;
+  }
+  .editor-note b{color:var(--rust);}
+  .editor-note .en-title{
+    display:inline-block;
+    font-weight:900;
+    color:var(--ink);
+    letter-spacing:.04em;
+    margin-bottom:6px;
+  }
+  .editor-note code{
+    font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+    font-size:.86em;
+    background:var(--paper-2);
+    padding:1px 6px;
+    border-radius:3px;
+    color:var(--ink);
+  }
+  .editor-note pre{
+    margin:10px 0 4px;
+    padding:12px 14px;
+    background:var(--ink);
+    color:var(--paper);
+    border-radius:6px;
+    overflow-x:auto;
+    font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+    font-size:.82rem;
+    line-height:1.6;
+  }
+
+  /* ---------- 목차 ---------- */
+  .toc{
+    margin:40px 0 8px;
+    padding:24px 26px;
+    background:var(--paper-2);
+    border:1px solid var(--rule);
+  }
+  .toc h2{
+    font-size:.82rem;
+    font-weight:900;
+    letter-spacing:.28em;
+    margin:0 0 16px;
+    color:var(--ink-2);
+    text-transform:uppercase;
+  }
+  .toc ol{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:2px 34px;
+  }
+  .toc a{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    padding:7px 0;
+    text-decoration:none;
+    color:var(--ink);
+    border-bottom:1px solid transparent;
+    transition:color .15s;
+  }
+  .toc a:hover{color:var(--rust);}
+  .toc .n{
+    font-family:"Black Han Sans",sans-serif;
+    font-size:1.05rem;
+    color:var(--ochre);
+    min-width:1.4em;
+  }
+  .toc a:hover .n{color:var(--rust);}
+
+  /* ---------- 섹션 ---------- */
+  .section{
+    margin-top:64px;
+    opacity:1;
+  }
+  .reveal{opacity:0;transform:translateY(14px);}
+  .reveal.in{opacity:1;transform:none;transition:opacity .55s ease,transform .55s ease;}
+
+  .sec-head{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding-bottom:14px;
+    border-bottom:2px solid var(--ink);
+    margin-bottom:26px;
+  }
+  .sec-num{
+    flex:none;
+    display:grid;
+    place-items:center;
+    width:52px;
+    height:52px;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:"Black Han Sans",sans-serif;
+    font-size:1.7rem;
+    line-height:1;
+  }
+  .sec-num.caution{background:var(--rust);}
+  .sec-head .eyebrow{
+    display:block;
+    font-size:.74rem;
+    font-weight:700;
+    letter-spacing:.22em;
+    color:var(--teal);
+    text-transform:uppercase;
+    margin-bottom:2px;
+  }
+  .sec-head h2{
+    margin:0;
+    font-size:clamp(1.4rem,4.6vw,1.9rem);
+    font-weight:900;
+    letter-spacing:-.01em;
+    line-height:1.15;
+  }
+
+  .section h3{
+    font-size:1.16rem;
+    font-weight:900;
+    margin:34px 0 8px;
+    padding-left:14px;
+    border-left:5px solid var(--ochre);
+    line-height:1.3;
+  }
+  .section p{margin:10px 0;}
+  .lead-note{color:var(--ink-2);margin:0 0 6px;}
+  strong{font-weight:900;color:var(--ink);}
+  .hl{
+    background:linear-gradient(transparent 60%,var(--ochre-soft) 60%);
+    font-weight:900;
+    padding:0 1px;
+  }
+
+  /* 준비물 리스트 */
+  .parts{list-style:none;margin:8px 0;padding:0;}
+  .parts li{
+    padding:13px 0 13px 26px;
+    border-bottom:1px solid var(--rule);
+    position:relative;
+  }
+  .parts li::before{
+    content:"";
+    position:absolute;
+    left:2px;top:22px;
+    width:9px;height:9px;
+    background:var(--ochre);
+  }
+  .parts .term{font-weight:900;}
+  .parts .sub{color:var(--ink-2);font-size:.94em;}
+
+  /* 요령/스텝 리스트 */
+  ul.tips{list-style:none;margin:12px 0;padding:0;}
+  ul.tips>li{
+    position:relative;
+    padding:6px 0 6px 30px;
+    margin-bottom:6px;
+  }
+  ul.tips>li::before{
+    content:"→";
+    position:absolute;left:2px;top:6px;
+    color:var(--teal);
+    font-weight:900;
+  }
+  ol.steps{margin:12px 0;padding-left:0;counter-reset:st;list-style:none;}
+  ol.steps>li{
+    position:relative;
+    padding:4px 0 4px 40px;
+    margin-bottom:8px;
+    counter-increment:st;
+  }
+  ol.steps>li::before{
+    content:counter(st);
+    position:absolute;left:0;top:2px;
+    width:26px;height:26px;
+    display:grid;place-items:center;
+    background:var(--paper-2);
+    border:1.5px solid var(--ink);
+    font-weight:900;
+    font-size:.9rem;
+    border-radius:50%;
+  }
+
+  /* 콜아웃 */
+  .callout{
+    margin:18px 0;
+    padding:16px 18px 16px 20px;
+    background:var(--paper-2);
+    border-left:6px solid var(--teal);
+  }
+  .callout.warn{border-left-color:var(--rust);}
+  .callout .c-label{
+    display:block;
+    font-weight:900;
+    font-size:.82rem;
+    letter-spacing:.06em;
+    margin-bottom:4px;
+    color:var(--teal);
+  }
+  .callout.warn .c-label{color:var(--rust);}
+  .callout p{margin:2px 0;}
+
+  /* ---------- 그림 상자(영상/사진) : 시그니처 ---------- */
+  .demo{margin:20px 0 24px;}
+  .demo-tab{
+    display:inline-block;
+    font-size:.76rem;
+    font-weight:900;
+    letter-spacing:.1em;
+    color:var(--paper);
+    background:var(--ochre);
+    padding:5px 12px 4px;
+  }
+  .demo-tab.photo{background:var(--teal);}
+  .demo-frame{
+    position:relative;
+    min-height:210px;
+    border:2px solid var(--ink);
+    background:
+      repeating-linear-gradient(45deg,transparent,transparent 11px,rgba(0,0,0,.03) 11px,rgba(0,0,0,.03) 12px),
+      var(--paper-2);
+    display:flex;
+  }
+  .demo-empty{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    gap:8px;
+    text-align:center;
+    padding:20px;
+    color:var(--ink-2);
+  }
+  .demo-empty .ic{font-size:1.7rem;line-height:1;opacity:.6;}
+  .demo-empty .t{font-weight:700;font-size:.92rem;letter-spacing:.04em;}
+  .demo-empty code{
+    font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+    font-size:.8rem;
+    background:var(--paper);
+    border:1px solid var(--rule);
+    padding:3px 9px;
+    border-radius:4px;
+    color:var(--ink);
+  }
+  .demo-frame img{
+    position:relative;
+    z-index:1;
+    width:100%;
+    height:auto;
+    display:block;
+    object-fit:contain;
+  }
+  .demo figcaption{
+    margin-top:9px;
+    font-size:.9rem;
+    color:var(--ink-2);
+    line-height:1.55;
+  }
+  .demo figcaption::before{
+    content:"▸ ";
+    color:var(--ochre);
+    font-weight:900;
+  }
+
+  /* 좋은 vs 나쁜 */
+  .compare{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin:20px 0;
+  }
+  .joint{
+    padding:18px;
+    background:var(--paper-2);
+    border-top:5px solid var(--teal);
+  }
+  .joint.bad{border-top-color:var(--rust);}
+  .joint svg{display:block;width:100%;height:96px;margin-bottom:10px;}
+  .joint h4{
+    margin:0 0 6px;
+    font-size:1.02rem;
+    font-weight:900;
+    color:var(--teal);
+  }
+  .joint.bad h4{color:var(--rust);}
+  .joint p{margin:0;font-size:.92rem;color:var(--ink-2);line-height:1.6;}
+
+  /* ---------- 푸터 ---------- */
+  footer{
+    margin-top:72px;
+    padding-top:22px;
+    border-top:3px double var(--ink);
+    font-size:.85rem;
+    color:var(--ink-2);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  footer b{color:var(--ink);font-weight:900;}
+
+  /* ---------- 반응형 ---------- */
+  @media (max-width:560px){
+    body{font-size:16px;}
+    .toc ol{grid-template-columns:1fr;}
+    .compare{grid-template-columns:1fr;}
+    .sec-num{width:44px;height:44px;font-size:1.4rem;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .reveal{opacity:1;transform:none;}
+  }
+  @media print{
+    .editor-note{display:none;}
+    body{background:#fff;font-size:12px;}
+    .reveal{opacity:1;transform:none;}
+    .demo-frame{min-height:120px;}
+    .section{margin-top:32px;page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ================= 마스트헤드 ================= -->
+  <header class="mast">
+    <p class="club-tag">UB · 유비 · 하드웨어 동아리</p>
+    <h1>납땜 <em>가이드</em></h1>
+    <p class="lede">처음 인두를 잡는 사람을 위한 기초 실습 자료. 왜 되고 왜 안 되는지까지 눈으로 확인합니다.</p>
+  </header>
+
+  <!-- ================= 편집 안내 (완성 후 삭제) ================= -->
+  <div class="editor-note">
+    <span class="en-title">📌 편집 안내 — 완성되면 이 상자는 지우세요</span><br>
+    영상(GIF)·사진 파일을 이 <code>index.html</code>과 <b>같은 폴더</b>에 올린 뒤, 각 그림 상자에 적힌 파일명(예: <code>01-method-a.gif</code>)으로 이름만 맞추면 자동으로 표시됩니다. 파일명을 바꾸기 싫으면, HTML에서 해당 줄의 <code>src</code>를 본인 파일명으로 고치면 됩니다. 각 그림 상자의 코드는 이렇게 생겼습니다:
+    <pre>&lt;img src="01-method-a.gif" alt="설명"&gt;</pre>
+  </div>
+
+  <!-- ================= 목차 ================= -->
+  <nav class="toc" aria-label="목차">
+    <h2>목차</h2>
+    <ol>
+      <li><a href="#s0"><span class="n">0</span><span>안전 수칙</span></a></li>
+      <li><a href="#s1"><span class="n">1</span><span>준비물</span></a></li>
+      <li><a href="#s2"><span class="n">2</span><span>인두팁 사용 요령</span></a></li>
+      <li><a href="#s3"><span class="n">3</span><span>납땜의 두 가지 방법</span></a></li>
+      <li><a href="#s4"><span class="n">4</span><span>만능기판(PCB) 납땜</span></a></li>
+      <li><a href="#s5"><span class="n">5</span><span>잘못된 납땜 제거</span></a></li>
+      <li><a href="#s6"><span class="n">6</span><span>핀헤더 납땜</span></a></li>
+      <li><a href="#s7"><span class="n">7</span><span>전선을 단자에 연결</span></a></li>
+      <li><a href="#s8"><span class="n">8</span><span>인두팁 관리</span></a></li>
+    </ol>
+  </nav>
+
+  <!-- ================= 0. 안전 수칙 ================= -->
+  <section class="section reveal" id="s0">
+    <div class="sec-head">
+      <span class="sec-num caution">0</span>
+      <div><span class="eyebrow">Safety</span><h2>시작하기 전에 — 안전 수칙</h2></div>
+    </div>
+
+    <ul class="tips">
+      <li><strong>작업 후에는 손을 씻으세요.</strong> 유연납에는 납이 들어있는데, 손에 묻은 납이 <span class="hl">입으로 들어가는 경우만</span> 조심하면 됩니다. 납땜하면서 음식을 집어먹지 말고, 끝나면 손을 씻으면 충분합니다. (호흡이나 피부로는 거의 흡수되지 않으니 과하게 걱정할 필요는 없습니다.)</li>
+      <li><strong>환기를 하세요.</strong> 납땜 연기는 납 증기가 아니라 <strong>플럭스가 타면서 나오는 흄</strong>인데, 호흡기에 자극이 될 수 있으니 창문을 열거나 팬을 틀어두면 좋습니다.</li>
+      <li><strong>화상 주의.</strong> 인두팁은 매우 뜨겁습니다. 사용하지 않을 때는 반드시 거치대에 올려두세요.</li>
+    </ul>
+
+    <div class="callout warn">
+      <span class="c-label">⚠ 뜨거운 건 납이 아니라 금속입니다</span>
+      <p><strong>저항 다리(리드)나 전선은 매우 뜨거워지고 잘 식지 않습니다.</strong> 납땜 직후 이 부분을 맨손으로 만지면 화상 위험이 있으니 주의하세요. (반대로 납은 금방 식습니다 — 자세한 내용은 다음 장에서.)</p>
+    </div>
+  </section>
+
+  <!-- ================= 1. 준비물 ================= -->
+  <section class="section reveal" id="s1">
+    <div class="sec-head">
+      <span class="sec-num">1</span>
+      <div><span class="eyebrow">Tools</span><h2>준비물</h2></div>
+    </div>
+
+    <ul class="parts">
+      <li><span class="term">인두기</span> <span class="sub">— 이 인두기는 온도조절 기능이 없어, 전원을 꽂으면 바로 가열됩니다.</span></li>
+      <li><span class="term">납 — 유연납(Sn63/Pb37)</span> <span class="sub">— 저온에서 납땜이 잘 되고 다루기 쉬워 실습에 적합합니다. (무연납은 녹는점이 높아 납땜이 더 어렵고 인두팁을 빨리 망가뜨려서, 우리는 유연납을 씁니다.)</span></li>
+      <li><span class="term">플럭스(납땜보조제)</span> <span class="sub">— 금속 표면의 산화막을 제거하고 납이 잘 퍼지도록(젖도록) 돕는 물질입니다. 굵은 전선처럼 납이 속까지 잘 안 스며드는 경우에 특히 유용합니다.</span></li>
+      <li><span class="term">롱노즈(롱노즈 플라이어)</span> <span class="sub">— 부품을 잡거나 리드를 구부릴 때 사용합니다.</span></li>
+      <li><span class="term">니퍼</span> <span class="sub">— 남은 리드를 잘라낼 때 사용합니다.</span></li>
+      <li><span class="term">솔더 윅(디솔더링 심지)</span> <span class="sub">— 납을 흡수해 제거하는 도구입니다.</span></li>
+      <li><span class="term">납 흡입기(솔더 서커)</span> <span class="sub">— 녹은 납을 빨아들여 제거하는 도구입니다.</span></li>
+      <li><span class="term">황동 수세미</span> <span class="sub">— 인두팁 청소용. (노란 스펀지를 물에 적셔 쓰는 방법도 있지만, 황동 수세미로 충분해 굳이 쓸 필요 없습니다.)</span></li>
+    </ul>
+  </section>
+
+  <!-- ================= 2. 인두팁 사용 요령 ================= -->
+  <section class="section reveal" id="s2">
+    <div class="sec-head">
+      <span class="sec-num">2</span>
+      <div><span class="eyebrow">Know-how</span><h2>인두팁 사용 요령</h2></div>
+    </div>
+    <p class="lead-note">납땜을 시작하기 전에 알아두면 좋은 것들입니다.</p>
+
+    <ul class="tips">
+      <li><strong>납은 맨손으로 잡고 하세요.</strong> 납선은 인두팁에 닿는 끝부분만 녹고, 손으로 잡은 쪽까지는 열이 올라오지 않아 맨손으로 다뤄도 됩니다. 처음 하는 사람들이 뜨거운 줄 알고 핀셋으로 잡는 경우가 많은데, <span class="hl">오히려 손으로 잡는 게 미세한 조작이 쉽고 정확합니다.</span></li>
+      <li><strong>팁의 뾰족한 끝이 아니라, 살짝 안쪽의 넓은 면(배 부분)으로 납땜하세요.</strong> 팁 끝으로 갈수록 열이 부족해 납이 잘 안 녹습니다. "왜 안 녹지?" 싶을 때는 팁 끝만 대고 있는 경우가 많습니다.</li>
+      <li><strong>청소는 황동 수세미로 합니다.</strong> 팁에 낀 찌꺼기나 산화물을 문질러 닦아내면 납이 훨씬 잘 붙습니다.</li>
+    </ul>
+  </section>
+
+  <!-- ================= 3. 납땜의 두 가지 방법 ================= -->
+  <section class="section reveal" id="s3">
+    <div class="sec-head">
+      <span class="sec-num">3</span>
+      <div><span class="eyebrow">Basics</span><h2>납땜의 두 가지 방법</h2></div>
+    </div>
+
+    <h3>방법 A — 인두 고정 + 납 밀어넣기 (기본)</h3>
+    <p>인두팁을 납땜할 부위에 가만히 대고, 반대편에서 납을 밀어넣는 방식입니다. <strong>가장 기본이 되고 제일 많이 쓰는 방법</strong>입니다.</p>
+    <figure class="demo">
+      <span class="demo-tab">▶ 영상</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">▶</span><span class="t">영상 자리</span><code>01-method-a.gif</code></div>
+        <img src="01-method-a.gif" alt="인두를 고정하고 납을 밀어넣는 모습" onerror="this.remove()">
+      </div>
+      <figcaption>인두는 고정, 납을 부위에 밀어넣습니다.</figcaption>
+    </figure>
+
+    <h3>방법 B — 팁에 납 묻혀 가져다 대기 (잘 안 씀)</h3>
+    <p>납을 먼저 인두팁에 묻힌 뒤 부위에 가져다 대는 방식입니다. <strong>인두팁에서는 납이 잘 안 떨어지기 때문에</strong> 일반적인 납땜에는 잘 사용하지 않습니다. 다만 떨어진 두 지점을 납으로 이어 전선처럼 만드는 <span class="hl">점퍼 배선(솔더 브릿지)</span>을 할 때는 유용합니다.</p>
+    <figure class="demo">
+      <span class="demo-tab">▶ 영상</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">▶</span><span class="t">영상 자리</span><code>02-method-b.gif</code></div>
+        <img src="02-method-b.gif" alt="팁에 납을 묻혀 가져다 대는 모습" onerror="this.remove()">
+      </div>
+      <figcaption>팁에 납을 묻혀 가져다 댑니다 — 납이 잘 안 떨어지는 걸 확인하세요.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ================= 4. PCB 납땜 ================= -->
+  <section class="section reveal" id="s4">
+    <div class="sec-head">
+      <span class="sec-num">4</span>
+      <div><span class="eyebrow">Protoboard</span><h2>만능기판(PCB) 납땜</h2></div>
+    </div>
+    <p class="lead-note">PCB에서도 주로 <strong>인두를 가만히 대고 납을 움직이는</strong> 방식(방법 A)을 씁니다.</p>
+
+    <h3>캐패시터 납땜</h3>
+    <p>캐패시터를 기판 구멍에 꽂고 기판에 밀착시킨 후, 움직이지 않도록 다리를 바깥으로 접어 고정합니다. 인두팁을 다리에 대고 납을 움직여가며 납땜한 뒤, 남은 긴 다리는 잘라냅니다.</p>
+    <figure class="demo">
+      <span class="demo-tab">▶ 영상</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">▶</span><span class="t">영상 자리</span><code>03-capacitor.gif</code></div>
+        <img src="03-capacitor.gif" alt="캐패시터를 꽂고 다리를 접어 고정한 뒤 납땜하는 모습" onerror="this.remove()">
+      </div>
+      <figcaption>꽂기 → 다리 접어 고정 → 납땜 → 남은 다리 절단.</figcaption>
+    </figure>
+
+    <h3>남은 다리를 점퍼선으로 재활용</h3>
+    <p>잘라내기 전에, 남은 긴 다리를 전선처럼 사용해 다른 지점과 이을 수 있습니다. 정말 필요 없는 다리만 잘라냅니다.</p>
+    <figure class="demo">
+      <span class="demo-tab">▶ 영상</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">▶</span><span class="t">영상 자리</span><code>04-lead-jumper.gif</code></div>
+        <img src="04-lead-jumper.gif" alt="남은 다리를 전선처럼 사용해 잇는 모습" onerror="this.remove()">
+      </div>
+      <figcaption>남은 다리 = 공짜 점퍼선.</figcaption>
+    </figure>
+
+    <h3>저항 납땜 &amp; 흔한 실수</h3>
+    <p>저항을 납땜할 때 일부러 오래, 납을 많이 써서 해봤습니다. 그런데 실제로는 <strong>윗면(앞면)에 납이 거의 남지 않고 대부분 뒷면으로 빠져나갔습니다.</strong> <span class="hl">납을 많이 쓴다고 잘 되는 게 아니라는 것</span>을 보여주는 예입니다.</p>
+    <figure class="demo">
+      <span class="demo-tab">▶ 영상</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">▶</span><span class="t">영상 자리</span><code>05-resistor-fail.gif</code></div>
+        <img src="05-resistor-fail.gif" alt="납을 많이 썼지만 앞면에 안 남고 뒤로 빠지는 모습" onerror="this.remove()">
+      </div>
+      <figcaption>납이 앞에 안 남고 뒤로 빠지는 잘못된 예.</figcaption>
+    </figure>
+
+    <h3>리드 재활용 점퍼 배선</h3>
+    <p>남은 저항 다리를 알맞게 잘라, 다른 목표 지점에 납땜해 전선처럼 사용합니다. 이때 <strong>납을 인두팁에 묻혀서(방법 B)</strong> 두 지점을 잇습니다.</p>
+    <figure class="demo">
+      <span class="demo-tab">▶ 영상</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">▶</span><span class="t">영상 자리</span><code>06-resistor-jumper.gif</code></div>
+        <img src="06-resistor-jumper.gif" alt="저항 다리를 점퍼선으로 활용해 두 지점을 잇는 모습" onerror="this.remove()">
+      </div>
+      <figcaption>방법 B를 응용해 두 점을 잇습니다.</figcaption>
+    </figure>
+
+    <h3>짧은 거리 솔더 브릿지</h3>
+    <p>다리를 실수로 잘라냈는데 전선으로 잇기엔 거리가 짧다면, 납땜만으로 일일이 이어야 합니다. 이때도 납이 뒷면으로 빠지지 않도록:</p>
+    <ol class="steps">
+      <li>먼저 인두팁에 납을 살짝 묻혀 <strong>구멍을 메웁니다.</strong></li>
+      <li>식은 후, 다시 인두팁에 납을 많이 묻혀가며 <strong>두 지점을 잇습니다.</strong></li>
+    </ol>
+    <figure class="demo">
+      <span class="demo-tab">▶ 영상</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">▶</span><span class="t">영상 자리</span><code>07-solder-bridge.gif</code></div>
+        <img src="07-solder-bridge.gif" alt="구멍을 메운 뒤 짧은 거리를 납으로 잇는 모습" onerror="this.remove()">
+      </div>
+      <figcaption>구멍 메우기 → 식힘 → 납으로 잇기.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ================= 5. 납 제거 ================= -->
+  <section class="section reveal" id="s5">
+    <div class="sec-head">
+      <span class="sec-num">5</span>
+      <div><span class="eyebrow">Desolder</span><h2>잘못된 납땜 제거하는 3가지 방법</h2></div>
+    </div>
+
+    <h3>① 인두기로 긁어내기</h3>
+    <p>납이 식기를 기다린 후, 인두기로 다시 녹이며 긁어내 제거합니다.</p>
+    <figure class="demo">
+      <span class="demo-tab">▶ 영상</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">▶</span><span class="t">영상 자리</span><code>08-remove-scrape.gif</code></div>
+        <img src="08-remove-scrape.gif" alt="인두기로 납을 녹여 긁어내는 모습" onerror="this.remove()">
+      </div>
+      <figcaption>녹이면서 긁어냅니다.</figcaption>
+    </figure>
+
+    <h3>② 납 흡입기(솔더 서커)로 빨아들이기</h3>
+    <p>납을 녹인 상태에서, 공기로 빨아들이는 도구로 제거합니다.</p>
+    <figure class="demo">
+      <span class="demo-tab">▶ 영상</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">▶</span><span class="t">영상 자리</span><code>09-remove-sucker.gif</code></div>
+        <img src="09-remove-sucker.gif" alt="솔더 서커로 녹은 납을 빨아들이는 모습" onerror="this.remove()">
+      </div>
+      <figcaption>녹인 즉시 빨아들입니다.</figcaption>
+    </figure>
+
+    <h3>③ 솔더 윅 + 플럭스로 흡수</h3>
+    <p>솔더 윅을 쓸 만큼 자르고, 잘 흡수되도록 넓게 펴줍니다. 플럭스를 묻힌 뒤 납 위에 대고 인두기로 가열하면, <strong>녹은 납이 심지로 빨려 올라가</strong> 제거됩니다.</p>
+    <figure class="demo">
+      <span class="demo-tab">▶ 영상</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">▶</span><span class="t">영상 자리</span><code>10-remove-wick.gif</code></div>
+        <img src="10-remove-wick.gif" alt="솔더 윅에 플럭스를 묻혀 납을 흡수하는 모습" onerror="this.remove()">
+      </div>
+      <figcaption>자르기 → 넓게 펴기 → 플럭스 → 흡수.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ================= 6. 핀헤더 ================= -->
+  <section class="section reveal" id="s6">
+    <div class="sec-head">
+      <span class="sec-num">6</span>
+      <div><span class="eyebrow">Pin header</span><h2>핀헤더(숫놈)를 만능기판에 납땜하기</h2></div>
+    </div>
+    <div class="callout">
+      <span class="c-label">✱ 제일 자주 하게 되는 작업</span>
+      <p>모듈을 사면 핀헤더가 납땜 안 된 채로 오는 경우가 많아, 실전에서 가장 많이 하게 됩니다.</p>
+    </div>
+
+    <h3>1) 양끝 먼저 가접(임시 고정)</h3>
+    <p>손을 자유롭게 쓰기 위해, 먼저 양끝 핀을 살짝 붙입니다.</p>
+    <ol class="steps">
+      <li>인두팁에 납을 묻힙니다. <span class="lead-note" style="display:inline">(방법 B 응용)</span></li>
+      <li>한 손으로 기판과 핀헤더를 <strong>정중앙에 밀착</strong>시켜 고정합니다.</li>
+      <li>납 묻은 인두팁을 양끝 핀에 가져다 댑니다. 팁에서 납이 잘 안 떨어지므로 <strong>"가접"이라 생각</strong>하고, 좀 오래 대고 있어야 겨우 묻습니다.</li>
+    </ol>
+    <div class="callout warn">
+      <span class="c-label">⚠ 과열 주의</span>
+      <p>너무 오래 대면 핀헤더의 검은 플라스틱이 녹아 <strong>핀이 빠질 수 있습니다.</strong> 적당히.</p>
+    </div>
+    <figure class="demo">
+      <span class="demo-tab">▶ 영상</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">▶</span><span class="t">영상 자리</span><code>11-header-tack.gif</code></div>
+        <img src="11-header-tack.gif" alt="핀헤더 양끝을 가접해 고정하는 모습" onerror="this.remove()">
+      </div>
+      <figcaption>양끝만 먼저 잡아 손을 자유롭게.</figcaption>
+    </figure>
+
+    <h3>2) 나머지 핀 본납땜</h3>
+    <p>가접이 끝나면, 인두팁을 핀에 대고 납을 움직여가며 제대로 납땜합니다.</p>
+    <figure class="demo">
+      <span class="demo-tab">▶ 영상</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">▶</span><span class="t">영상 자리</span><code>12-header-solder.gif</code></div>
+        <img src="12-header-solder.gif" alt="나머지 핀을 본납땜하는 모습" onerror="this.remove()">
+      </div>
+      <figcaption>인두 고정, 납을 움직여 한 핀씩.</figcaption>
+    </figure>
+
+    <h3>3) 서로 붙은 납(브릿지) 정리</h3>
+    <p>핀끼리 납으로 붙어버린 부분은, 온도가 내려갈 때까지 기다렸다가 긁어서 떼어냅니다. 또는 인두팁에 납이 살짝 묻은 상태로 핀헤더 맨 위에서 가져다 대면, 아래쪽 납땜 부위가 녹으면서 <strong>알아서 자리를 잡습니다.</strong></p>
+    <figure class="demo">
+      <span class="demo-tab">▶ 영상</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">▶</span><span class="t">영상 자리</span><code>13-header-cleanup.gif</code></div>
+        <img src="13-header-cleanup.gif" alt="붙어버린 납을 정리하는 모습" onerror="this.remove()">
+      </div>
+      <figcaption>붙은 납은 식힌 뒤 긁어내거나, 위에서 다시 녹여 정리.</figcaption>
+    </figure>
+
+    <h3>좋은 납땜 vs 나쁜 납땜</h3>
+    <div class="compare">
+      <div class="joint">
+        <svg viewBox="0 0 160 90" role="img" aria-label="좋은 납땜: 완만한 원뿔 필렛">
+          <line x1="20" y1="70" x2="140" y2="70" stroke="#29251F" stroke-width="3"/>
+          <line x1="80" y1="70" x2="80" y2="18" stroke="#29251F" stroke-width="3"/>
+          <path d="M80 22 C64 40 52 62 40 70 L120 70 C108 62 96 40 80 22 Z" fill="#2C6E66" opacity="0.85"/>
+        </svg>
+        <h4>좋은 납땜 ○</h4>
+        <p>납이 화산처럼 <strong>완만한 원뿔(세모)</strong> 형태로 퍼지고, 패드 바닥에 얇게 밀착됩니다.</p>
+      </div>
+      <div class="joint bad">
+        <svg viewBox="0 0 160 90" role="img" aria-label="나쁜 납땜: 공처럼 뭉친 냉납">
+          <line x1="20" y1="70" x2="140" y2="70" stroke="#29251F" stroke-width="3"/>
+          <line x1="80" y1="70" x2="80" y2="18" stroke="#29251F" stroke-width="3"/>
+          <circle cx="80" cy="46" r="26" fill="#A6432A" opacity="0.85"/>
+        </svg>
+        <h4>나쁜 납땜 ✕</h4>
+        <p>바닥과 밀착되지 않고 <strong>공처럼 둥글게 방울진</strong> 형태(냉납)입니다.</p>
+      </div>
+    </div>
+    <p class="lead-note">인두 예열이 잘 돼 있고, 팁 관리가 잘 됐고, 납이 좋다면 실패할 수가 없습니다. — 사실 <strong>나쁜 납땜 사진을 찍는 게 더 힘들었습니다.</strong> 인두기 관리가 잘 돼 있고 좋은 인두기인 데다 유연납을 써서, 일부러 최저 온도로 맞춰놓고서야 겨우 실패한 사진을 얻었습니다.</p>
+    <div class="compare">
+      <figure class="demo" style="margin:0">
+        <span class="demo-tab photo">📷 사진</span>
+        <div class="demo-frame">
+          <div class="demo-empty"><span class="ic">📷</span><span class="t">잘된 납땜</span><code>14-header-good.jpg</code></div>
+          <img src="14-header-good.jpg" alt="잘된 핀헤더 납땜" onerror="this.remove()">
+        </div>
+      </figure>
+      <figure class="demo" style="margin:0">
+        <span class="demo-tab photo">📷 사진</span>
+        <div class="demo-frame">
+          <div class="demo-empty"><span class="ic">📷</span><span class="t">잘못된 납땜</span><code>15-header-bad.jpg</code></div>
+          <img src="15-header-bad.jpg" alt="잘못된 핀헤더 납땜" onerror="this.remove()">
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ================= 7. 전선 연결 ================= -->
+  <section class="section reveal" id="s7">
+    <div class="sec-head">
+      <span class="sec-num">7</span>
+      <div><span class="eyebrow">Wiring</span><h2>전선을 모듈 단자에 연결하기</h2></div>
+    </div>
+
+    <h3>방법 A — 가장 쉽고 튼튼함</h3>
+    <p>전선 피복을 벗기고 심선을 꼬은 뒤, 단자 구멍 사이로 통과시킵니다. 인두팁을 전선과 단자 사이에 대고 납땜합니다.</p>
+    <figure class="demo">
+      <span class="demo-tab">▶ 영상</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">▶</span><span class="t">영상 자리</span><code>16-wire-through.gif</code></div>
+        <img src="16-wire-through.gif" alt="꼰 전선을 단자 구멍에 통과시켜 납땜하는 모습" onerror="this.remove()">
+      </div>
+      <figcaption>구멍에 통과 → 전선과 단자 사이에 인두.</figcaption>
+    </figure>
+
+    <h3>구멍이 막혔거나 전선이 들어가기엔 좁을 때</h3>
+    <p>단자에 먼저 납을 묻히고, 피복 벗겨 꼬은 전선을 가져다 댄 뒤, 그 위에 인두기를 올립니다. 어느 정도 열이 전달되어 납땜이 됩니다.</p>
+    <figure class="demo">
+      <span class="demo-tab">▶ 영상</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">▶</span><span class="t">영상 자리</span><code>17-wire-ontop.gif</code></div>
+        <img src="17-wire-ontop.gif" alt="단자에 납을 묻히고 전선을 위에서 가열하는 모습" onerror="this.remove()">
+      </div>
+      <figcaption>단자에 납 선코팅 → 전선 올리고 위에서 가열.</figcaption>
+    </figure>
+    <div class="callout warn">
+      <span class="c-label">⚠ 이 방법은 잘 안 될 확률이 높습니다</span>
+      <p>납은 열전도가 매우 좋지만 <strong>전선은 열전도가 나빠서</strong>, 열이 충분히 전달되지 않아 납땜이 안 되기 쉽습니다. 특히 <strong>단자 반대편 전선</strong>에는 납이 제대로 묻지 않아 윗부분이 떨어질 수 있습니다.</p>
+    </div>
+    <figure class="demo">
+      <span class="demo-tab">▶ 영상</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">▶</span><span class="t">영상 자리</span><code>18-wire-fail.gif</code></div>
+        <img src="18-wire-fail.gif" alt="윗부분이 떨어지는 실패 모습" onerror="this.remove()">
+      </div>
+      <figcaption>실제로 윗부분이 떨어지는 모습.</figcaption>
+    </figure>
+
+    <h3>해결책 — 전선 주석도금(Tinning)</h3>
+    <p>전선을 꼰 후 나무 위에 올려두고, 그 위에 인두팁을 대고 납을 적셔 <strong>전선 전체를 납으로 코팅</strong>합니다.</p>
+    <figure class="demo">
+      <span class="demo-tab">▶ 영상</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">▶</span><span class="t">영상 자리</span><code>19-wire-tinning.gif</code></div>
+        <img src="19-wire-tinning.gif" alt="전선을 나무 위에 두고 납으로 코팅하는 모습" onerror="this.remove()">
+      </div>
+      <figcaption>나무 받침 위에서 전선 전체에 납을 먹입니다.</figcaption>
+    </figure>
+    <ul class="tips">
+      <li>도금한 전선으로 단자에 납땜하면, <strong>전선 전체에 납이 있어 열전도가 좋아져 잘 붙습니다.</strong></li>
+      <li>흔들어보면 납땜 부위는 안 떨어지고, 오히려 <span class="hl">납이 안 묻은 쪽 전선이 먼저 떨어집니다</span> — 그만큼 납땜 부위가 튼튼하다는 뜻입니다.</li>
+    </ul>
+    <figure class="demo">
+      <span class="demo-tab">▶ 영상</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">▶</span><span class="t">영상 자리</span><code>20-wire-shake.gif</code></div>
+        <img src="20-wire-shake.gif" alt="흔들어도 납땜부위는 안 떨어지고 도금 안 된 쪽이 먼저 떨어지는 모습" onerror="this.remove()">
+      </div>
+      <figcaption>흔들기 테스트 — 튼튼함 확인.</figcaption>
+    </figure>
+
+    <h3>굵은 전선 다루기</h3>
+    <p>굵은 전선에 납을 먹일 때는, 전선에 납을 대고 <strong>오래 대고 있어야 속까지 잘 퍼집니다.</strong></p>
+    <figure class="demo">
+      <span class="demo-tab">▶ 영상</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">▶</span><span class="t">영상 자리</span><code>21-wire-thick.gif</code></div>
+        <img src="21-wire-thick.gif" alt="굵은 전선에 오래 열을 줘 납을 퍼뜨리는 모습" onerror="this.remove()">
+      </div>
+      <figcaption>굵을수록 더 오래 — 속까지 퍼질 시간을 줍니다.</figcaption>
+    </figure>
+
+    <h3>더 굵은 전선 — 플럭스 사용</h3>
+    <p>더 굵은 전선은 납땜만으로는 겉은 될지 몰라도 <strong>속까지는 안 될 확률이 높습니다.</strong> 이때는 <strong>플럭스</strong>를 발라야 합니다. 플럭스는 납이 잘 퍼지게, 전선이 납에 잘 젖게 만들어주는 물질입니다. 굵은 전선에 플럭스를 바르고 납땜하면 <span class="hl">납이 속까지 잘 퍼집니다.</span></p>
+    <figure class="demo">
+      <span class="demo-tab">▶ 영상</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">▶</span><span class="t">영상 자리</span><code>22-wire-flux.gif</code></div>
+        <img src="22-wire-flux.gif" alt="플럭스를 발라 굵은 전선에 납이 잘 퍼지는 모습" onerror="this.remove()">
+      </div>
+      <figcaption>플럭스 → 납이 속까지 젖어 듭니다.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ================= 8. 인두팁 관리 ================= -->
+  <section class="section reveal" id="s8">
+    <div class="sec-head">
+      <span class="sec-num">8</span>
+      <div><span class="eyebrow">Care</span><h2>마무리 — 인두팁 관리</h2></div>
+    </div>
+
+    <ul class="tips">
+      <li><strong>사용 후에는 팁에 납을 얇게 묻혀두세요(티닝).</strong> 팁이 공기 중 산소와 반응해 산화되는 것을 막아줍니다.</li>
+      <li><strong>팁이 검게 산화되어 납이 안 붙으면, 여분의 팁으로 교체하세요.</strong> 여분이 준비되어 있으니 억지로 쓰지 말고 바로 바꾸는 게 좋습니다.</li>
+    </ul>
+    <figure class="demo">
+      <span class="demo-tab photo">📷 사진</span>
+      <div class="demo-frame">
+        <div class="demo-empty"><span class="ic">📷</span><span class="t">인두팁 교체</span><code>23-tip-replace.jpg</code></div>
+        <img src="23-tip-replace.jpg" alt="산화된 인두팁을 여분으로 교체하는 모습" onerror="this.remove()">
+      </div>
+      <figcaption>산화된 팁은 미련 없이 교체.</figcaption>
+    </figure>
+  </section>
+
+  <footer>
+    <span><b>유비 (UB)</b> · 하드웨어 동아리 · 납땜 기초 실습</span>
+    <span>안전 먼저, 손 씻기 필수.</span>
+  </footer>
+
+</div>
+
+<script>
+  // 스크롤 시 섹션이 부드럽게 나타나도록 (동작 최소화 설정 시 비활성)
+  (function(){
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var items = document.querySelectorAll('.reveal');
+    if(reduce || !('IntersectionObserver' in window)){
+      items.forEach(function(el){ el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    items.forEach(function(el){ io.observe(el); });
+  })();
+</script>
+</body>
+</html>
